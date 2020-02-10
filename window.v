@@ -274,6 +274,8 @@ fn bar() {
 	foo(&Switch{})
 	foo(&Rectangle{})
 	foo(&Group{})
+	foo(&TreeView{})
+	foo(&TreeItem{})
 }
 
 fn bar2() {
