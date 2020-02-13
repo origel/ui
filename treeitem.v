@@ -17,6 +17,7 @@ const (
 		size: freetype.default_font_size
 		align: gx.ALIGN_LEFT
 	}
+	tree_item_padding = 2
 )
 
 pub struct TreeItem {
@@ -32,10 +33,12 @@ mut:
 	height int
 	ui     &UI
 	open  bool = false
+	children []IWidgeter
 }
 
 pub struct TreeItemConfig {
 	text   string
+	children []IWidgeter
 	ref		&TreeItem
 }
 
@@ -57,11 +60,7 @@ fn (t mut TreeItem)init(p &ILayouter) {
 pub fn treeitem(c TreeItemConfig) &TreeItem {
 	lbl := &TreeItem{
 		text: c.text
-	}
-	if c.ref != 0 {
-		mut ref := c.ref
-		*ref = *lbl
-		return &ref
+		children: c.children
 	}
 	return lbl
 }
@@ -74,14 +73,14 @@ fn (b mut TreeItem) set_pos(x, y int) {
 fn (b mut TreeItem) size() (int, int) {
 	size := b.ui.ft.text_size('+ ' + b.text)
 
-	return size.var_0, size.var_1
+	return size.var_0 + tree_item_padding * 2, size.var_1 + tree_item_padding * 2
 }
 
 fn (b mut TreeItem) propose_size(w, h int) (int, int) {
 	size := b.ui.ft.text_size(b.text)
 
 	// First return the width, then the height multiplied by line count.
-	return size.var_0, size.var_1
+	return size.var_0 + tree_item_padding * 2, size.var_1 + tree_item_padding * 2
 }
 
 fn (b mut TreeItem) draw() {
@@ -96,12 +95,12 @@ fn (b mut TreeItem) draw() {
         text = '+ ' + b.text
     }
 
-    if b.selected {
-        b.ui.gg.draw_rect(b.x, b.y, b.width, b.height, gx.blue)
-	    b.ui.ft.draw_text(b.x, b.y, text, tree_item_selected_text_cfg)
+    /*if b.selected {
+        b.ui.gg.draw_rect(b.x, b.y, b.width + 2*tree_item_padding, b.height + 2* tree_item_padding, gx.blue)
+	    b.ui.ft.draw_text(b.x + tree_item_padding, b.y + tree_item_padding, text, tree_item_selected_text_cfg)
 	}else{
-	    b.ui.ft.draw_text(b.x, b.y, text, tree_item_text_cfg)
-	}
+	}*/
+    b.ui.ft.draw_text(b.x + tree_item_padding, b.y + tree_item_padding, text, tree_item_text_cfg)
 }
 
 fn (t &TreeItem) focus() {}
