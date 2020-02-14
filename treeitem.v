@@ -18,13 +18,12 @@ const (
 		align: gx.ALIGN_LEFT
 	}
 	tree_item_padding = 2
+	treeitem_debug = true
 )
 
 pub struct TreeItem {
 pub mut:
 	selected bool = false
-
-mut:
 	text   string
 	parent ILayouter
 	x      int
@@ -70,10 +69,31 @@ fn (b mut TreeItem) set_pos(x, y int) {
 	b.y = y
 }
 
-fn (b mut TreeItem) size() (int, int) {
+pub fn (b mut TreeItem) size() (int, int) {
+	return b.caculate_size()
+}
+
+fn (b mut TreeItem) caculate_size() (int, int) {
 	size := b.ui.ft.text_size('+ ' + b.text)
 
-	return size.var_0 + tree_item_padding * 2, size.var_1 + tree_item_padding * 2
+    b.width = size.var_0 + tree_item_padding * 2
+    b.height = size.var_1 + tree_item_padding * 2
+    
+    if b.open {
+        mut max_height := 0
+	    for child in b.children {
+	        //s := child.size()
+	        /*if s.var_0 > b.width {
+	        	b.width = s.var_0
+	        }
+	        if s.var_1 > max_height {
+	        	max_height = s.var_1
+	        }*/
+	    }
+	    b.height += max_height
+    }
+    
+    return b.width, b.height
 }
 
 fn (b mut TreeItem) propose_size(w, h int) (int, int) {
@@ -84,6 +104,11 @@ fn (b mut TreeItem) propose_size(w, h int) (int, int) {
 }
 
 fn (b mut TreeItem) draw() {
+    if treeitem_debug {
+    	b.ui.gg.draw_empty_rect(b.x, b.y, b.width, b.height, gx.blue)
+    	b.caculate_size()
+    }
+
 	height := b.ui.ft.text_height('W') // Get the height of the current font.
 	
 	mut text := ''
@@ -100,7 +125,7 @@ fn (b mut TreeItem) draw() {
 	    b.ui.ft.draw_text(b.x + tree_item_padding, b.y + tree_item_padding, text, tree_item_selected_text_cfg)
 	}else{
 	}*/
-    b.ui.ft.draw_text(b.x + tree_item_padding, b.y + tree_item_padding, text, tree_item_text_cfg)
+    b.ui.ft.draw_text(b.x, b.y, text, tree_item_text_cfg)
 }
 
 fn (t &TreeItem) focus() {}

@@ -21,9 +21,21 @@ fn main() {
 		ui.IWidgeter(ui.treeview({
 		    x:20
 		    y:20
+	        width: 100
+	        height: 200
 			children: [
 				ui.IWidgeter(ui.treeitem({
-					text: 'name1'
+					text: 'name1',
+					children: [
+						ui.IWidgeter(ui.treeitem({
+							text: 'sub name1'
+							children:[]
+						})),
+						ui.IWidgeter(ui.treeitem({
+							text: 'sub name2'
+							children:[]
+						})),
+					]
 				})),
 				ui.IWidgeter(ui.treeitem({
 					text: 'name2'

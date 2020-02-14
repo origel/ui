@@ -75,6 +75,15 @@ fn main() {
 					placeholder: 'Last name'
 					ref: &app.last_name
 				}),
+				ui.dropdown({
+					width: 140
+					def_text: "Select an option"
+					items: [
+						ui.DropdownItem{text:'Delete all users'},
+						ui.DropdownItem{text:'Export users'},
+						ui.DropdownItem{text:'Exit'},
+					]
+				}),
 				ui.textbox({
 					max_len: 3
 					width: 200
